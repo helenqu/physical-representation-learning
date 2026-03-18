@@ -1,0 +1,7 @@
+num_epochs: 100
+lr: 1e-5
+batch_size: 32
+report_every: 100
+save_every: 10
+head_type: linear
+embeddings_dir: "./embeddings"

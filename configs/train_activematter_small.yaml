@@ -1,0 +1,46 @@
+defaults:
+  - dataset: active_matter
+  - model: conv_small
+  - ft: linear
+
+dataset:
+  num_frames: 16
+
+model:
+  objective: "jepa"
+  dims: [16, 32, 64, 128, 128]
+  num_res_blocks: [3, 3, 3, 9, 3]
+
+train:
+  num_epochs: 30
+  batch_size: 8 # per-device
+  report_every: 100
+  save_every: 2
+  include_labels: false
+  sim_coeff: 2
+  std_coeff: 40
+  cov_coeff: 2
+  predict_n_steps: false
+  lr_scheduler: "cosine"
+  lr_scheduler_warmup_epochs: 2
+  min_lr: 1e-6
+  lr: 1e-3 # following 1e-3 * global_batch_size/256 rule
+  weight_decay: 0.05
+  noise_std: 1.0
+  run_name: "noise-std-1.0"
+  distributed: true
+
+ft:
+  task: "regression"
+  use_attentive_pooling: true
+  lr_scheduler: "cosine"
+  lr_scheduler_warmup_epochs: 2
+  min_lr: 0
+  lr: 1e-3
+  weight_decay: 0.01
+  noise_std: 1.0
+  run_name: "activematter-jepa-FT-noise-std-1.0"
+  distributed: false
+
+out_path: "./checkpoints"
+cache_path: "./dataset_cache"

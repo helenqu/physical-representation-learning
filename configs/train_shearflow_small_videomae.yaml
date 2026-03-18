@@ -1,0 +1,28 @@
+defaults:
+  - dataset: shear_flow
+  - ft: linear
+
+dataset:
+  num_frames: 16
+
+model:
+  objective: "videomae"
+
+ft:
+  task: "regression"
+  use_attentive_pooling: true
+  lr_scheduler: "cosine"
+  lr_scheduler_warmup_epochs: 2
+  min_lr: 0
+  lr: 1e-3
+  weight_decay: 0.01
+  num_train_steps: 320
+  num_val_steps: 150
+  dropout_rate: 0.1
+  noise_std: 0.1
+  batch_size: 64
+  run_name: shearflow-videomae-noise-std-0.1-randominit
+
+
+out_path: "./checkpoints"
+cache_path: "./dataset_cache"

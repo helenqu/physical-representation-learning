@@ -1,0 +1,6 @@
+name: "rayleigh_benard"
+num_frames: 4 # should be power of 2
+num_frames_per_patch: 2
+num_chans: 4
+resolution: 224
+offset: 4

@@ -1,0 +1,4 @@
+dims: [48, 96, 192, 384]
+num_res_blocks: [3, 3, 9, 3]
+name: conv_vit_tiny
+vit_equivalency: tiny

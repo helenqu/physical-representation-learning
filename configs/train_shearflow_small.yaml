@@ -1,0 +1,53 @@
+defaults:
+  - dataset: shear_flow
+  - model: conv_small
+  - ft: linear
+
+dataset:
+  num_frames: 16
+
+model:
+  objective: "jepa"
+  dims: [16, 32, 64, 128, 128]
+  num_res_blocks: [3, 3, 3, 9, 3]
+
+train:
+  num_epochs: 6
+  batch_size: 8
+  report_every: 100
+  save_every: 1
+  include_labels: false
+  # vicreg coefficients
+  sim_coeff: 2
+  std_coeff: 40
+  cov_coeff: 2
+  # gaussian matching loss coefficients
+  bcs_coeff: 1
+  num_slices: 1024
+  # this gets a random block as the target rather than the next block
+  predict_n_steps: false
+  lr_scheduler: "cosine"
+  lr_scheduler_warmup_epochs: 6
+  min_lr: 1e-6
+  lr: 1e-4 # following 1e-3 * global_batch_size/256 rule
+  weight_decay: 0.05
+  noise_std: 1.0
+  run_name: "noise-std-1.0"
+  distributed: true
+
+ft:
+  task: "regression"
+  use_attentive_pooling: true
+  lr_scheduler: "cosine"
+  lr_scheduler_warmup_epochs: 2
+  min_lr: 0
+  lr: 1e-3
+  weight_decay: 0.01
+  num_train_steps: 320
+  num_val_steps: 150
+  noise_std: 1.0
+  run_name: shearflow-jepa-FT-noise-std-1.0-gaussianmatching
+  batch_size: 64
+
+out_path: "./checkpoints"
+cache_path: "./dataset_cache"

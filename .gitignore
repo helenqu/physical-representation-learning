@@ -1,0 +1,14 @@
+wandb/
+__pycache__/
+*/__pycache__/
+slurm-*.out
+*/slurm-*.out
+*.gif
+*/OLD/
+OLD/
+.ipynb_checkpoints/
+figures/
+*.log
+*/*.ipynb
+*.ipynb
+.claude
