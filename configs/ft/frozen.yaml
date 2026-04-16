@@ -1,0 +1,21 @@
+eval_mode: "linear_and_knn"       # "linear" | "knn" | "linear_and_knn" | "attentive"
+feature_pool: "gap"                # "gap" | "flatten"
+feature_cache_dir: "./feature_cache"
+out_dir: "./frozen_eval_out"
+task: "regression"
+use_attentive_pooling: false
+batch_size: 32                     # for encoder forward pass
+num_workers: 4
+run_name: null                     # null -> auto-generated from checkpoint
+
+linear:
+  num_epochs: 100
+  batch_size: 512
+  lr: 1.0e-3
+  weight_decay: 1.0e-4
+  bias: true
+  min_lr: 0.0
+
+knn:
+  ks: [1, 5, 10, 20, 50]
+  metrics: ["euclidean", "cosine"]
