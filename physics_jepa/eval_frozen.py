@@ -184,7 +184,48 @@ class FrozenEvaluator:
             results += self.run_linear(train_f, val_f, test_f)
         if self.eval_mode in ("knn", "linear_and_knn"):
             results += self.run_knn(train_f, val_f, test_f)
+
+        self._report(results, mean=mean.tolist(), std=std.tolist())
+        if self._wandb_on:
+            wandb.finish()
         return results
+
+    def _report(self, results: List[Dict], mean, std):
+        header = ["probe_type", "k", "metric", "split", "mse_zeta", "mse_alpha", "mse_mean"]
+        widths = [10, 5, 10, 5, 10, 10, 10]
+
+        def fmt(v, w):
+            if v is None:
+                return f"{'-':<{w}}"
+            if isinstance(v, float):
+                return f"{v:<{w}.4f}"
+            return f"{str(v):<{w}}"
+
+        line = "  ".join(f"{h:<{w}}" for h, w in zip(header, widths))
+        sep = "-" * len(line)
+        print()
+        print(sep)
+        print(line)
+        print(sep)
+        for r in results:
+            row = [r.get(h) for h in header]
+            print("  ".join(fmt(v, w) for v, w in zip(row, widths)))
+        print(sep)
+
+        payload = {
+            "checkpoint": str(Path(self.checkpoint_path).resolve()),
+            "dataset": self.cfg.dataset.name,
+            "eval_mode": self.eval_mode,
+            "feature_pool": self.feature_pool,
+            "label_order": PARAM_NAMES,
+            "label_mean": mean,
+            "label_std": std,
+            "results": results,
+        }
+        out_path = self.out_dir / "results.json"
+        with open(out_path, "w") as f:
+            json.dump(payload, f, indent=2)
+        print(f"results saved to {out_path}", flush=True)
 
     # ------------------------------------------------------------------ linear
     @staticmethod
