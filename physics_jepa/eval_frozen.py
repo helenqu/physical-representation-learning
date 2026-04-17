@@ -23,7 +23,7 @@ from .model import get_model_and_loss_cnn
 from .utils.hydra import compose
 
 
-PARAM_NAMES = ["zeta", "alpha"]  # matches data.py:659 metadata.constant_scalar_names
+PARAM_NAMES = ["alpha", "zeta"]  # scalars are sorted alphabetically in data.py:_build_index
 
 
 class FrozenEvaluator:
