@@ -48,10 +48,10 @@ singularity exec --nv \
     export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
     python -m physics_jepa.finetune \
       $CONFIG \
-      --trained_model_path $CKPT \
       ft.run_name=attentive-$TAG \
       ft.embeddings_dir=$EMBED_DIR \
-      out_path=$CKPT_OUT
+      out_path=$CKPT_OUT \
+      --trained_model_path $CKPT
   "
 
 echo "[$(date)] Done — attentive-probe artifacts under $ATT_ROOT"
