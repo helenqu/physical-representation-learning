@@ -1,15 +1,14 @@
 #!/bin/bash
-# Edit this file to match your computing environment, then source it from the
-# other scripts (it is sourced automatically by all scripts in this directory).
+# Sourced by all scripts in scripts/**/
 
-# Load Python module if your cluster uses environment modules, e.g.:
-# module load python/3.11.7
+source /ext3/miniforge3/etc/profile.d/conda.sh
+conda activate jepa
 
-# Activate your virtual environment:
-source /path/to/your/venv/bin/activate
+cd /scratch/$USER/physical-representation-learning
 
-# Navigate to the project root:
-cd /path/to/physics_jepa_public
+export THE_WELL_DATA_DIR=/scratch/$USER/physical-representation-learning/datasets
+export HDF5_USE_FILE_LOCKING=FALSE
 
-# Set the path to The Well datasets:
-export THE_WELL_DATA_DIR=/path/to/the_well/datasets
+# Keep HF cache off $HOME
+export HF_HOME=/scratch/$USER/.cache/huggingface
+export HUGGINGFACE_HUB_CACHE=$HF_HOME/hub
