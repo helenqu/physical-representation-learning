@@ -12,3 +12,5 @@ figures/
 */*.ipynb
 *.ipynb
 .claude
+*.ext3
+datasets/
