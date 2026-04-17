@@ -1,11 +1,11 @@
 #!/bin/bash
 #SBATCH --account=csci_ga_2572-2026sp
-#SBATCH --partition=c24m170-a100-2
+#SBATCH --partition=c12m85-a100-1
 #SBATCH --job-name=jepa-pretrain
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=8
-#SBATCH --gres=gpu:2
+#SBATCH --gres=gpu:1
 #SBATCH --time=24:00:00
 #SBATCH --requeue
 #SBATCH --output=pretrain_%j.out
