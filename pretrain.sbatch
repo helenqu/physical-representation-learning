@@ -34,10 +34,11 @@ singularity exec --nv \
     export THE_WELL_DATA_DIR=$REPO/datasets
     export HDF5_USE_FILE_LOCKING=FALSE
     export WANDB_API_KEY=\${WANDB_API_KEY:-}
+    export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
     torchrun --standalone --nproc_per_node=1 \
       -m physics_jepa.train_jepa \
       $CONFIG \
-      train.batch_size=8 \
+      train.batch_size=2 \
       out_path=$REPO/checkpoints
   "
 
