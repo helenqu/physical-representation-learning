@@ -28,7 +28,7 @@ singularity exec --nv \
   --overlay "$OVERLAY:ro" \
   --bind /scratch/$USER:/scratch/$USER \
   "$IMAGE" bash -c "
-    source /ext3/miniforge3/etc/profile.d/conda.sh
+    source /ext3/env.sh
     conda activate jepa
     cd $REPO
     export THE_WELL_DATA_DIR=$REPO/datasets
