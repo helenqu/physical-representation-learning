@@ -6,6 +6,7 @@ from torch.utils.data import IterableDataset
 from torch.nn import MSELoss
 
 import os
+from contextlib import nullcontext
 from pathlib import Path
 from tqdm import tqdm
 from einops import rearrange
@@ -30,6 +31,10 @@ class Trainer:
         self.cfg = cfg
         self.train_cfg = cfg[stage]
 
+        self.precision = self.train_cfg.get("precision", "fp32")
+        assert self.precision in ("fp32", "bf16"), \
+            f"unknown precision: {self.precision}"
+
         if self.cfg.model.get("vit_equivalency", None) == 'tiny':
             assert self.cfg.model.dims[-1] == 384, "dims must be [48, 96, 192, 384] for tiny vit equivalency"
             assert self.cfg.dataset.get('resolution', None) == 224, "resolution must be 224 for tiny vit equivalency"
@@ -45,6 +50,7 @@ class Trainer:
             torch.cuda.set_device(0)
 
         distprint(OmegaConf.to_yaml(self.cfg, resolve=True), local_rank=self.rank)
+        distprint(f"precision={self.precision}", local_rank=self.rank)
 
         self.train_loader = get_train_dataloader_from_cfg(self.cfg, stage=stage, rank=self.rank, world_size=self.world_size)
         self.val_loader = get_val_dataloader_from_cfg(self.cfg, stage=stage, rank=self.rank, world_size=self.world_size)
@@ -84,6 +90,11 @@ class Trainer:
     def set_up_gradient_accumulation(self):
         actual_global_batch_size = self.train_cfg.batch_size * self.world_size
         return max(self.train_cfg.get("target_global_batch_size", 256) // actual_global_batch_size, 1)
+
+    def _autocast(self):
+        if self.precision == "bf16":
+            return torch.autocast(device_type="cuda", dtype=torch.bfloat16)
+        return nullcontext()
 
     def training_loop(self, model_components, loss_fn, optimizer, run_name):
         # set up gradient accumulation
@@ -236,7 +247,8 @@ class Trainer:
             batch['target'] = tgt
             del tgt
 
-        pred, loss_dict = self.pred_fn(batch, model_components, loss_fn)
+        with self._autocast():
+            pred, loss_dict = self.pred_fn(batch, model_components, loss_fn)
 
         if log:
             distprint(f"pred shape: {pred.shape}", local_rank=self.rank)
