@@ -14,6 +14,7 @@ model:
 train:
   num_epochs: 30
   batch_size: 8 # per-device
+  precision: "bf16" # fp32 | bf16; bf16 halves activation memory on A100
   report_every: 100
   save_every: 2
   include_labels: false

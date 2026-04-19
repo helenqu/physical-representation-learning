@@ -38,7 +38,6 @@ singularity exec --nv \
     torchrun --standalone --nproc_per_node=1 \
       -m physics_jepa.train_jepa \
       $CONFIG \
-      train.batch_size=2 \
       out_path=$REPO/checkpoints
   "
 
